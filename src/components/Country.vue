@@ -2,44 +2,45 @@
   <div class="hello">
     <div id="app">
       <div class="contentWrapper">
-      <h1>{{ global }}</h1>
+      <h1>{{ countrySearchCode }}</h1>
+      <h1>{{ $route.params }}</h1>
       <button @click="getSortByField">click</button>
         <h1 class="center">Covid19 Tracker 2020</h1>
 
         <div class="break-line"></div>
 
         <section class="search-covid">
-          <input class="search-covid-input" placeholder="search..." value="" />
-          <button class="search-covid-button">Search</button>
+          <input class="search-covid-input" v-model="searchCountry" placeholder="search..." value="" />
+          <button class="search-covid-button" @click="handleClickSearchCountry">Search</button>
         </section>
 
         <div class="break-line"></div>
 
-        <p>Last updated:  {{new Date().toLocaleString()}}</p>
-        <h1>World Wide</h1>
+        <p v-if="country">Last updated:  {{this.country.Date}}</p>
+        <h1 v-if="country">{{ this.country.Country }}</h1>
 
-        <section class="summary" v-if="global">
+        <section class="summary" v-if="country">
           <div>
             <div>
               <p class="text-slim orange">Total Cases</p>
-              <p class="text-bold orange numLabel">{{global.TotalConfirmed}}</p>
+              <p class="text-bold orange numLabel">{{country.Confirmed}}</p>
             </div>
 
             <div>
               <p class="text-slim orange">Total treatment</p>
-              <p class="text-bold orange numLabel">{{global.TotalConfirmed - (global.TotalRecovered + global.TotalDeaths)}}</p>
+              <p class="text-bold orange numLabel">{{country.Confirmed - (country.Recovered + country.Deaths)}}</p>
             </div>
           </div>
 
           <div>
             <div>
               <p class="text-slim blue">Total Recovered</p>
-              <p class="text-bold blue numLabel">{{global.TotalRecovered}}</p>
+              <p class="text-bold blue numLabel">{{country.Recovered}}</p>
             </div>
 
             <div>
               <p class="text-slim blue">Total Deaths</p>
-              <p class="text-bold blue numLabel">{{global.TotalDeaths}}</p>
+              <p class="text-bold blue numLabel">{{country.Deaths}}</p>
             </div>
           </div>
         </section>
@@ -52,24 +53,12 @@
           </p>
           <div class="chart-wrapper">
             <div class="chart">
-              <bar-example
-                :labelCharBar="labelCharBar[0]"
-                :labelCountries="labelConfirmed"
-                :dataCountries="confirmedData"
-              />
-            </div>
-            <div class="chart">
-              <bar-example
-                :labelCharBar="labelCharBar[1]"
-                :labelCountries="labelRecovered"
-                :dataCountries="recoveredData"
-              />
-            </div>
-            <div class="chart">
-              <bar-example
-                :labelCharBar="labelCharBar[2]"
-                :labelCountries="labelDeaths"
-                :dataCountries="deathsData"
+              <line-example
+                :countrySearchCode="countrySearchCode"
+                :confirmedData="confirmedData"
+                :recoveredData="recoveredData"
+                :deathsData="deathsData"
+                :dateData="dateData"
               />
             </div>
           </div>
@@ -96,20 +85,22 @@
 </template>
 
 <script>
-import BarExample from './charts/BarExample'
+import LineExample from './charts/LineExample'
 
 export default {
   components: {
-    BarExample
+    LineExample
   },
   name: 'Covid',
   data () {
     return {
-      msg: 'Welcome to Hung App',
+      countrySearchCode: '',
+      searchCountry: '',
       summary: null,
       global: null,
-      countries: null,
+      country: null,
       countriesList: [],
+      countriesListLimit30: [],
       topTen: null,
       labelSort: ['TotalConfirmed', 'TotalRecovered', 'TotalDeaths'],
       labelCharBar: ['Total Confirmed', 'Total Recovered', 'Total Deaths'],
@@ -118,7 +109,8 @@ export default {
       labelDeaths: [],
       confirmedData: [],
       recoveredData: [],
-      deathsData: []
+      deathsData: [],
+      dateData: []
     }
   },
   methods: {
@@ -126,7 +118,7 @@ export default {
       this.countries = data.Countries
     },
     async getSummary () {
-      fetch('https://api.covid19api.com/summary', {
+      fetch('https://api.covid19api.com/total/dayone/country/south-africa', {
         mode: 'cors',
         method: 'GET',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
@@ -134,16 +126,23 @@ export default {
         .then(res => res.json())
         .then(
           (result) => {
-            this.summary = result
-            this.global = result.Global
-            this.getCountries(result)
-            if (this.countriesList.length === 0) {
-              this.getCountriesList(result.Countries)
+            if (result.length > 0) {
+              this.summary = result
+              this.country = result[result.length - 1]
+              this.countriesListLimit30 = result.splice(result.length - 60, result.length - 1)
             }
+            // this.summary = result
+            // this.global = result.Global
+            // this.getCountries(result)
+            // if (this.countriesList.length === 0) {
+            //   this.getCountriesList(result.Countries)
+            // }
 
-            this.labelSort.forEach((lable, index) => {
-              this.topTen = this.sortByField(result.Countries, lable).splice(0, 10)
-              this.getDataChartBar(this.topTen, index)
+            this.countriesListLimit30.forEach((country) => {
+              this.confirmedData.push(country.Confirmed)
+              this.recoveredData.push(country.Recovered)
+              this.deathsData.push(country.Deaths)
+              this.dateData.push(country.Date)
             })
           }
         )
@@ -187,10 +186,15 @@ export default {
           this.countriesList.push(country.Country)
         })
       }
+    },
+    handleClickSearchCountry () {
+      // var aa = $('#searchCountry').val()
+      console.log('aa -->', this.searchCountry)
     }
   },
   mounted: function () {
     this.getSummary()
+    this.countrySearchCode = this.$route.params.country
   }
 }
 </script>

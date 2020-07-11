@@ -131,11 +131,18 @@
   }
 
   .apexcharts-tooltip {
-    background: #f3f3f3;
-    color: orange;
+    background: black;
+    color: rgb(0, 0, 0);
   }
 
   .apexcharts-legend-text {
     background: #f3f3f3;
     color: orange;
+    padding: 2px;
+  }
+
+  .div-center {
+    display: block !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
   }

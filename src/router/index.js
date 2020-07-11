@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import HelloWorld from '@/components/HelloWorld'
 import Covid from '@/components/Covid'
+import Country from '@/components/Country'
 
 Vue.use(Router)
 
@@ -9,13 +9,18 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'HelloWorld',
-      component: HelloWorld
+      name: 'Covid',
+      component: Covid
     },
     {
       path: '/covid',
       name: 'Covid',
       component: Covid
+    },
+    {
+      path: '/covid/:country',
+      name: 'Country',
+      component: Country
     }
   ]
 })

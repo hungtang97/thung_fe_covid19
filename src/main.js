@@ -3,7 +3,7 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
-import VueApexCharts from '../dist/vue-apexcharts';
+import VueApexCharts from '../dist/vue-apexcharts'
 
 Vue.component('apexchart', VueApexCharts)
 
