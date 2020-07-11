@@ -22,24 +22,24 @@
           <div>
             <div>
               <p class="text-slim orange">Total Cases</p>
-              <p class="text-bold orange numLabel">1,234,235</p>
+              <p class="text-bold orange numLabel">{{global.TotalConfirmed}}</p>
             </div>
 
             <div>
               <p class="text-slim orange">Total treatment</p>
-              <p class="text-bold orange numLabel">1,234,235</p>
+              <p class="text-bold orange numLabel">{{global.TotalConfirmed - (global.TotalRecovered + global.TotalDeaths)}}</p>
             </div>
           </div>
 
           <div>
             <div>
               <p class="text-slim blue">Total Recovered</p>
-              <p class="text-bold blue numLabel">1,234,235</p>
+              <p class="text-bold blue numLabel">{{global.TotalRecovered}}</p>
             </div>
 
             <div>
               <p class="text-slim blue">Total Deaths</p>
-              <p class="text-bold blue numLabel">1,234,235</p>
+              <p class="text-bold blue numLabel">{{global.TotalDeaths}}</p>
             </div>
           </div>
         </section>
@@ -52,10 +52,25 @@
           </p>
           <div class="chart-wrapper">
             <div class="chart">
-              <bar-example />
+              <bar-example 
+                :labelSort="labelSort[0]"
+                :labelCountries="labelConfirmed"
+                :dataCountries="confirmedData"
+              />
             </div>
             <div class="chart">
-              <bar-example />
+              <bar-example 
+                :labelSort="labelSort[1]"
+                :labelCountries="labelRecovered"
+                :dataCountries="recoveredData"
+              />
+            </div>
+            <div class="chart">
+              <bar-example 
+                :labelSort="labelSort[2]"
+                :labelCountries="labelDeaths"
+                :dataCountries="deathsData"
+              />
             </div>
           </div>
         </section>
@@ -99,14 +114,18 @@ export default {
       global: null,
       countries: null,
       topTen: null,
+      labelSort: ['TotalConfirmed', 'TotalRecovered', 'TotalDeaths'],
+      labelConfirmed: [],
+      labelRecovered: [],
+      labelDeaths: [],
+      confirmedData: [],
+      recoveredData: [],
+      deathsData: [],
     }
   },
   methods: {
     getCountries(data) {
       this.countries = data.Countries
-      console.log("getCountries--->",this.countries)
-      console.log("data--->",data)
-
     },
     async getSummary() {
       fetch("https://api.covid19api.com/summary", {
@@ -120,7 +139,10 @@ export default {
             this.summary = result
             this.global = result.Global
             this.getCountries(result)
-            this.getSortByField(result.Countries, "TotalDeaths")
+            this.labelSort.forEach((lable, index) => {
+            this.topTen = this.sortByField(result.Countries, lable).splice(0,10)
+            this.getDataChartBar(this.topTen, index)
+            });
           },
         )
         .catch(err => {
@@ -133,14 +155,35 @@ export default {
       });
     },
     getSortByField (data, field) {
-      this.topTen = this.sortByField(this.countries, "TotalDeaths")
+      this.topTen = this.sortByField(data, field)
+    },
+    getDataChartBar (topTen, index) {
+      if (topTen && topTen.length > 0) {
+        topTen.forEach((country) => {
+          switch (index) {
+            case 0:
+              this.labelConfirmed.push(country.Country);
+              this.confirmedData.push(country.TotalConfirmed);
+              break;
+            case 1:
+              this.labelRecovered.push(country.Country);
+              this.recoveredData.push(country.TotalRecovered);
+              break;
+            case 2:
+              this.labelDeaths.push(country.Country);
+              this.deathsData.push(country.TotalDeaths);
+              break;
+            default:
+              break;
+          }
+        });
+      }
     }
   },
   mounted: function() {
     this.getSummary()
   }
 }
-
 </script>
 
 <style>

@@ -11,6 +11,7 @@
 
 export default {
   name: 'BarExample',
+  props: ['labelSort', 'labelCountries', 'dataCountries'],
   data: function() {
     return {
       chartOptions: {
@@ -20,7 +21,7 @@ export default {
           }
         },
         xaxis: {
-          categories: [1921, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999],
+          categories: this.labelCountries,
           labels: {
             style: {
               colors: 'white'
@@ -36,11 +37,8 @@ export default {
         }
       },
       series: [{
-        name: 'Confirmed',
-        data: [44, 55, 41, 64, 22, 43, 21]
-      }, {
-        name: 'Active',
-        data: [53, 32, 33, 52, 13, 44, 32]
+        name: this.labelSort,
+        data: this.dataCountries
       }],
     }
   },
