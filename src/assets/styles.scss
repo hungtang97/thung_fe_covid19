@@ -1,0 +1,141 @@
+  .blue {
+    color: rgb(93, 188, 210);
+  }
+  
+  .orange {
+    color: rgb(235, 121, 56);
+  }
+  
+  .break-line {
+    background-color: rgba(255, 255, 255, 0.3);
+    height: 2px;
+    margin: 20px 0;
+  }
+  
+  .numLabel {
+    font-size: 25px;
+    font-weight: bold;
+  }
+  
+  .text-slim {
+    font-weight: 200;
+  }
+  
+  .text-bold {
+    font-weight: bold;
+  }
+  
+  .text-gray {
+    color: rgba(255, 255, 255, 0.6);
+  }
+  
+  .chart-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    .chart {
+      width: 45%;
+      min-width: 290px;
+      margin-bottom: 10px;
+      height: 200px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      text-align: center;
+    }
+  }
+  
+  .title {
+    font-size: 16px;
+    text-align: center;
+  }
+  
+  .center {
+    text-align: center;
+  }
+
+  .contentWrapper {
+    padding: 2%;
+    background-color: rgb(43,55,75);
+  }
+  
+  
+  
+  .summary {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    > div {
+      display: flex;
+      justify-content: space-between;
+      flex-direction: column;
+      flex-wrap: wrap;
+      width: 47%;
+      margin: 10px 0;
+      > div {
+        margin: 10px;
+      }
+    }
+  }
+  
+  footer {
+    color: rgba(255, 255, 255, 0.3);
+    text-align: center;
+    padding: 10px 0 5px 0;
+  }
+  
+  @media only screen and (min-width: 600px) {
+    .search {
+      input {
+        width: 90%;
+      }
+    }
+    
+    .summary > div {
+      flex-direction: row;
+      justify-content: center;
+      > div {
+        width: 50%;
+        margin: 0;
+        text-align: center;
+      }
+    }
+  }
+
+  .hello {
+    font-family: sans-serif;
+    padding: 0;
+    margin: 0;
+    color: white;
+  }
+
+  .search-covid {
+    display: flex !important;
+    justify-content: flex-start !important;
+  }
+  
+  .search-covid-input, .search-covid-button {
+    background-color: darkgrey !important;
+    border: none !important;
+    height: 35px !important;
+    margin: 5px !important;
+  }
+
+  .search-covid-input {
+    border: none !important;
+    padding: 0 0 0 10px !important;
+    width: 40% !important;
+  }
+
+  .search-covid-button {
+    cursor: pointer !important;
+    min-width: 70px !important;
+  }
+
+  .apexcharts-tooltip {
+    background: #f3f3f3;
+    color: orange;
+  }
+
+  .apexcharts-legend-text {
+    background: #f3f3f3;
+    color: orange;
+  }
