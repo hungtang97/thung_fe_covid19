@@ -2,15 +2,19 @@
   <div class="hello">
     <div id="app">
       <div class="contentWrapper">
-      <h1>{{ global }}</h1>
-      <button @click="getSortByField">click</button>
         <h1 class="center">Covid19 Tracker 2020</h1>
 
         <div class="break-line"></div>
 
         <section class="search-covid">
-          <input class="search-covid-input" placeholder="search..." value="" />
-          <button class="search-covid-button">Search</button>
+          <input
+            class="search-covid-input"
+            v-model="searchCountry"
+            placeholder="search..."
+            value=""
+            @keyup.enter="handleClickSearchCountry"
+          />
+          <button class="search-covid-button" @click="handleClickSearchCountry">Search</button>
         </section>
 
         <div class="break-line"></div>
@@ -50,7 +54,7 @@
           <p class="text-gray title text-bold">
             What are the daily totals?
           </p>
-          <div class="chart-wrapper">
+          <div class="chart-wrapper" v-if="labelConfirmed.length > 0">
             <div class="chart">
               <bar-example
                 :labelCharBar="labelCharBar[0]"
@@ -106,6 +110,7 @@ export default {
   data () {
     return {
       msg: 'Welcome to Hung App',
+      searchCountry: '',
       summary: null,
       global: null,
       countries: null,
@@ -137,14 +142,14 @@ export default {
             this.summary = result
             this.global = result.Global
             this.getCountries(result)
-            if (this.countriesList.length === 0) {
-              this.getCountriesList(result.Countries)
-            }
-
             this.labelSort.forEach((lable, index) => {
               this.topTen = this.sortByField(result.Countries, lable).splice(0, 10)
               this.getDataChartBar(this.topTen, index)
             })
+
+            if (this.countriesList.length === 0) {
+              this.getCountriesList(result.Countries)
+            }
           }
         )
         .catch(err => {
@@ -187,6 +192,11 @@ export default {
           this.countriesList.push(country.Country)
         })
       }
+    },
+    handleClickSearchCountry () {
+      if (this.searchCountry.length > 0) {
+        this.$router.push(`/covid/${this.searchCountry}`)
+      }
     }
   },
   mounted: function () {
@@ -196,5 +206,5 @@ export default {
 </script>
 
 <style>
-  @import '../assets/styles.scss'
+  @import '../assets/styles.scss';
 </style>
